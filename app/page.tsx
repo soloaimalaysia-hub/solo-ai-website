@@ -67,10 +67,10 @@ function Ticker() {
 
 // ── Solutions ─────────────────────────────────────────────────────────────────
 const SOLUTIONS = [
-  { icon:'💅', name:'Solo AI Worker — Saloon', tag:'BEAUTY & WELLNESS', desc:'May / Farah handles bookings, staff commissions, customer follow-ups via WhatsApp. 自动预约·员工提成·顾客跟进', live:true },
-  { icon:'🍈', name:'DurianTech — SBM + DURIANEX', tag:'AGRICULTURE', desc:'B2B2C durian marketplace with daily price index. AI matches orchard owners with wholesalers. 榴莲市场·每日价格指数·AI撮合交易', live:true },
-  { icon:'🎓', name:'UniClub OS', tag:'EDUCATION', desc:'University club management with double-authorisation, finance tracking, and public club pages. 大学俱乐部管理系统·双重签核', live:true },
-  { icon:'🚗', name:'GoKaki', tag:'TOURISM', desc:'Driver-merchant commission platform. AI reads receipts, auto-calculates payouts for tour guides. 司机带货抽佣系统·AI读单据', live:true },
+  { icon:'ti-scissors', name:'Solo AI Worker — Saloon', tag:'BEAUTY & WELLNESS', desc:'May / Farah handles bookings, staff commissions, customer follow-ups via WhatsApp. 自动预约·员工提成·顾客跟进', live:true },
+  { icon:'ti-leaf', name:'DurianTech — SBM + DURIANEX', tag:'AGRICULTURE', desc:'B2B2C durian marketplace with daily price index. AI matches orchard owners with wholesalers. 榴莲市场·每日价格指数·AI撮合交易', live:true },
+  { icon:'ti-school', name:'UniClub OS', tag:'EDUCATION', desc:'University club management with double-authorisation, finance tracking, and public club pages. 大学俱乐部管理系统·双重签核', live:true },
+  { icon:'ti-car', name:'GoKaki', tag:'TOURISM', desc:'Driver-merchant commission platform. AI reads receipts, auto-calculates payouts for tour guides. 司机带货抽佣系统·AI读单据', live:true },
 ]
 
 function Solutions() {
@@ -92,7 +92,7 @@ function Solutions() {
           {SOLUTIONS.map(s => (
             <div key={s.name} className="solution-card" style={{ background:'#111', border:'1px solid #1a1a1a', borderRadius:16, padding:24, position:'relative', overflow:'hidden' }}>
               <div className="card-top-line" style={{ position:'absolute', top:0, left:0, right:0, height:2, background:G }} />
-              <div style={{ fontSize:28, marginBottom:12 }}>{s.icon}</div>
+              <div style={{ marginBottom:12 }}><i className={`ti ${s.icon}`} style={{ fontSize:32, color:G }} /></div>
               <div style={{ fontSize:15, fontWeight:600, marginBottom:4, color:'#fff' }}>{s.name}</div>
               <div style={{ fontSize:10, color:G, background:'#0d1a00', padding:'2px 8px', borderRadius:10, display:'inline-block', marginBottom:10 }}>{s.tag}</div>
               <p style={{ fontSize:12, color:'#666', lineHeight:1.65, marginBottom:14 }}>{s.desc}</p>
