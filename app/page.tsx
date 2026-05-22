@@ -9,12 +9,11 @@ function Navbar() {
   return (
     <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: '1px solid #1a1a1a', background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(12px)' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: 22, letterSpacing: '-0.5px' }}>
-          <span style={{ color: '#fff' }}>Sol</span>
-          <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: G, margin: '0 1px', position: 'relative', top: -4 }} />
-          <span style={{ color: '#fff' }}>o</span>
-          <span style={{ color: G, marginLeft: 6 }}>AI</span>
-        </div>
+        <img
+          src="https://klrfpzxjsacriaqtfssf.supabase.co/storage/v1/object/public/solo-ai-assets/solo%20ai%20logo.webp"
+          alt="Solo AI"
+          style={{ height: 36, width: 'auto', objectFit: 'contain' }}
+        />
         <div style={{ display: 'flex', gap: 28, fontSize: 13 }}>
           {[['Solutions 解决方案','#solutions'],['Live Demo 现场演示','#demo'],['Pricing 价格','#pricing'],['Contact 联系我们','#contact']].map(([l,h]) => (
             <a key={l} href={h} style={{ color: '#888', textDecoration: 'none' }}
@@ -480,7 +479,11 @@ function Footer() {
   return (
     <footer style={{ padding:'24px 40px', borderTop:'1px solid #1a1a1a', background:'#050505', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
       <div style={{ fontSize:12, color:'#444' }}>
-        <div style={{ fontSize:15, fontWeight:700, color:'#fff', marginBottom:4 }}>Solo<span style={{ color:G }}>AI</span></div>
+        <img
+          src="https://klrfpzxjsacriaqtfssf.supabase.co/storage/v1/object/public/solo-ai-assets/solo%20ai%20logo.webp"
+          alt="Solo AI"
+          style={{ height: 28, width: 'auto', objectFit: 'contain', marginBottom: 6 }}
+        />
         <div>AI Made Simple. Business Made Better.</div>
         <div style={{ marginTop:4 }}>© 2026 Solo AI Malaysia · soloai.my</div>
       </div>
