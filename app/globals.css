@@ -48,3 +48,14 @@ body {
 
 .agent-card { transition: transform 0.25s ease, border-color 0.25s ease; }
 .agent-card:hover { transform: translateY(-3px); border-color: #7DC400 !important; }
+
+/* ── Demo section responsive ── */
+@media (max-width: 767px) {
+  /* Hide scrollbar on tab strip */
+  div[style*="overflowX: auto"]::-webkit-scrollbar { display: none; }
+}
+
+/* ── Scrollbar thin style for chat ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
