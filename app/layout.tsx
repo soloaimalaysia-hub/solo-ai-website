@@ -5,9 +5,9 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800', '900'] })
 
 export const metadata: Metadata = {
-  title: 'Solo AI — AI Made Simple. Business Made Better.',
-  description: "Malaysia's AI Empire for SME. 24/7 AI Workers for Saloon, Durian, Campus & more.",
-  keywords: 'Solo AI, Malaysia AI, SME AI, Saloon AI, WhatsApp AI, soloai.my',
+  title: 'Solo AI — Your AI CEO PA for Malaysia SME',
+  description: "AI CEO PA living inside WhatsApp. You confirm, May executes. Built for Salon, F&B & more. Malaysia's #1 AI for SME.",
+  keywords: 'Solo AI, AI CEO PA, Malaysia AI, SME AI, Saloon AI, F&B AI, May AI, WhatsApp AI, soloai.my',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
