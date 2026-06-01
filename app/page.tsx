@@ -174,150 +174,138 @@ const CONTENT = {
 } as const
 
 // ── Demo Scenarios Data ───────────────────────────────────────────────────────
-interface ChatMsg { from: 'customer'|'may_out'|'may_boss'; name?: string; text: string; time?: string }
-interface PanelItem { label: string; labelZh: string; value: string; valueZh?: string; highlight?: boolean }
+interface ChatMsg { r: 0|1; t: string }
+interface BossPanel {
+  flag: string; title: string; detail: string
+  ok: string; no: string; okMsg: string; noMsg: string
+}
 interface DemoScenario {
   key: string
-  chatTitleEn: string; chatTitleZh: string
+  status: string
   messages: ChatMsg[]
-  panel: {
-    titleEn: string; titleZh: string
-    items: PanelItem[]
-    actionEn?: string; actionZh?: string
-    holdEn?: string;   holdZh?: string
-    noteEn?: string;   noteZh?: string
-    noActionEn?: string; noActionZh?: string
-  }
+  boss: BossPanel
+  result: string
 }
 
 const DEMO_SCENARIOS: DemoScenario[] = [
   {
     key: 'new_customer',
-    chatTitleEn: 'New Customer',
-    chatTitleZh: '新顾客',
+    status: 'Your AI CEO PA · online',
     messages: [
-      { from: 'customer', name: 'Sarah Lim', text: 'Hi! Any slots Saturday for hair highlights?', time: '11:23 AM' },
-      { from: 'may_out',  text: 'Hi Sarah! 👋 We have 11am, 2pm & 4pm this Saturday. Highlights ~2hrs, from RM 150. Which works? 😊', time: '11:23 AM' },
-      { from: 'customer', name: 'Sarah Lim', text: '2pm please!', time: '11:24 AM' },
-      { from: 'may_out',  text: '✅ Booked! Sarah Lim · Saturday 2pm · Highlights. See you then! 🌟', time: '11:24 AM' },
-      { from: 'may_boss', text: '🆕 New customer secured! Sarah Lim, Sat 2pm, Highlights RM 150. First visit. Send welcome voucher?', time: '11:24 AM' },
+      { r:1, t:'Hi! How much for balayage? Long hair' },
+      { r:0, t:'Hi there! For long hair, balayage starts from RM320 — includes toning & styling. Free slot this week?' },
+      { r:1, t:'Saturday got slot ke?' },
+      { r:0, t:'Saturday got 11am and 3pm. Which one? And your name?' },
+      { r:1, t:"11am. I'm Priya" },
+      { r:0, t:'Got it! Holding 11am — confirming with the boss first…' },
     ],
-    panel: {
-      titleEn: '🆕 New Customer Alert', titleZh: '🆕 新顾客预约',
-      items: [
-        { label: 'Customer', labelZh: '顾客', value: 'Sarah Lim (1st visit)', valueZh: 'Sarah Lim（首次光顾）', highlight: true },
-        { label: 'Service',  labelZh: '服务', value: 'Hair Highlights', valueZh: '漂染护理' },
-        { label: 'Slot',     labelZh: '时间', value: 'Saturday · 2:00pm' },
-        { label: 'Revenue',  labelZh: '金额', value: 'RM 150+' },
-      ],
-      actionEn: '✓ Send RM 15 Welcome Voucher', actionZh: '✓ 发送 RM 15 欢迎折扣',
-      holdEn:   'Skip', holdZh: '跳过',
-      noteEn:   'First-visit vouchers boost return rate by 40%',
-      noteZh:   '首次优惠券提高 40% 回头率',
+    boss: {
+      flag: 'New booking',
+      title: 'Approval needed',
+      detail: 'Priya · Saturday 11am\nBalayage (long hair) · ~3 hrs · est. RM320',
+      ok: 'Confirm booking', no: 'Offer another slot',
+      okMsg: 'Confirmed ✓  Priya notified, added to your calendar.',
+      noMsg: 'May will offer Priya other slots.',
     },
+    result: 'New customer, booked in 5 messages. You did nothing but tap once.',
   },
   {
     key: 'regular',
-    chatTitleEn: 'Regular Reminder',
-    chatTitleZh: '回头客提醒',
+    status: 'Your AI CEO PA · online',
     messages: [
-      { from: 'may_boss', text: "👋 Morning! Lisa Chen's last visit was 28 days ago — she usually comes monthly for Keratin Treatment. Send a gentle reminder?", time: '9:01 AM' },
+      { r:1, t:'Hi May, same as always boleh?' },
+      { r:0, t:'Sarah! Your usual — full colour touch-up + trim with Kak Alicia, right?' },
+      { r:1, t:'Yes exactly' },
+      { r:0, t:'Kak Alicia is free Sat 2pm or Sun 11am. Which one?' },
+      { r:1, t:'Saturday lah' },
+      { r:0, t:'Noted! Locking it with the boss now…' },
     ],
-    panel: {
-      titleEn: '💝 Regular Customer Due', titleZh: '💝 回头客提醒',
-      items: [
-        { label: 'Customer',      labelZh: '顾客',      value: 'Lisa Chen', highlight: true },
-        { label: 'Total visits',  labelZh: '总次数',    value: '12 visits', valueZh: '12次' },
-        { label: 'Lifetime value',labelZh: '总消费',    value: 'RM 2,160' },
-        { label: 'Usual service', labelZh: '常做项目',  value: 'Keratin Treatment', valueZh: '角蛋白护理' },
-        { label: 'Last visit',    labelZh: '上次光顾',  value: '28 days ago', valueZh: '28天前' },
-      ],
-      actionEn: '✓ Send "Miss You" Reminder', actionZh: '✓ 发送"好久不见"提醒',
-      holdEn:   'Skip this week', holdZh: '本周跳过',
+    boss: {
+      flag: 'She remembered everything',
+      title: 'Approval needed',
+      detail: 'Sarah · Saturday 2pm\nWith Kak Alicia (her regular stylist)\nFull colour touch-up + trim',
+      ok: 'Confirm', no: 'Change stylist',
+      okMsg: 'Done ✓  Sarah set for Sat 2pm with Kak Alicia.',
+      noMsg: 'May will ask Sarah her stylist preference.',
     },
+    result: "She remembered Sarah's stylist, service & day. No file opened. Just done.",
   },
   {
     key: 'win_back',
-    chatTitleEn: 'Win-back',
-    chatTitleZh: '追回流失',
+    status: 'reaching out automatically…',
     messages: [
-      { from: 'may_boss', text: "⚠️ Win-back alert: Annie Lim hasn't visited in 45 days — she used to come monthly. Last service: Deep Conditioning. Send a win-back offer?", time: '9:15 AM' },
+      { r:0, t:"[Auto-sent 10:05am] Hi Mei! It's been 6 weeks — your colour might need a touch-up. We miss you 💚 Free any day this week?" },
+      { r:1, t:'Eh ya la! Thursday can?' },
+      { r:0, t:'Thursday got 1pm and 4pm. Which suits?' },
+      { r:1, t:'1pm can' },
+      { r:0, t:'Holding 1pm — confirming your slot with the boss…' },
     ],
-    panel: {
-      titleEn: '🔄 Win-back Opportunity', titleZh: '🔄 追回机会',
-      items: [
-        { label: 'Customer',   labelZh: '顾客',   value: 'Annie Lim', highlight: true },
-        { label: 'Last visit', labelZh: '上次光顾', value: '45 days ago ⚠️', valueZh: '45天前 ⚠️' },
-        { label: 'Frequency',  labelZh: '通常频率', value: 'Monthly regular', valueZh: '每月回头客' },
-        { label: 'Total spent',labelZh: '总消费',  value: 'RM 1,240' },
-        { label: 'Offer',      labelZh: '建议优惠', value: '20% off next visit', valueZh: '下次 8折' },
-      ],
-      actionEn: '✓ Send 20% Win-back Offer', actionZh: '✓ 发送 8折追回优惠',
-      holdEn:   'Skip this month', holdZh: '本月跳过',
+    boss: {
+      flag: 'Lost client coming back',
+      title: 'Approval needed',
+      detail: 'Mei · Thursday 1pm\n45 days no visit\nMay reached out automatically — you did nothing',
+      ok: 'Confirm slot', no: 'Reschedule',
+      okMsg: 'Confirmed ✓  Mei is back. Thursday 1pm locked in.',
+      noMsg: 'May will offer Mei other slots.',
     },
+    result: "45 days gone. One message from May. Back. You never even knew she'd lapsed.",
   },
   {
     key: 'commission',
-    chatTitleEn: 'Commission Approval',
-    chatTitleZh: '提成审批',
+    status: 'Your AI CEO PA · online',
     messages: [
-      { from: 'may_boss', text: '📊 Month-end commission ready:\n• Lisa: 42 services · RM 381.50\n• Amy: 35 services · RM 298.00\n• Rachel: 28 services · RM 245.75\n\nTotal payout: RM 925.25. Approve to notify staff?', time: '6:00 PM' },
+      { r:1, t:'May, berapa Alicia punya komisyen bulan ni?' },
+      { r:0, t:'Alicia · June 2026\n23 clients served\nRevenue: RM 4,850\nCommission (30%): RM 1,455\n\nTop service: Balayage (8)\nBusiest day: Saturday' },
     ],
-    panel: {
-      titleEn: '💰 Monthly Commission', titleZh: '💰 月度提成',
-      items: [
-        { label: 'Lisa',         labelZh: 'Lisa',   value: '42 services · RM 381.50' },
-        { label: 'Amy',          labelZh: 'Amy',    value: '35 services · RM 298.00' },
-        { label: 'Rachel',       labelZh: 'Rachel', value: '28 services · RM 245.75' },
-        { label: 'Total payout', labelZh: '总发放', value: 'RM 925.25', highlight: true },
-      ],
-      actionEn: '✓ Approve & Notify Staff', actionZh: '✓ 批准并通知员工',
-      holdEn:   'Review first', holdZh: '先复查',
+    boss: {
+      flag: 'Payroll',
+      title: 'Commission — approve?',
+      detail: 'Alicia · June 2026\nRM 1,455  (30% of RM 4,850)\nRecord as paid?',
+      ok: 'Approve payment', no: 'Hold — check first',
+      okMsg: 'Recorded ✓  Alicia notified of her commission.',
+      noMsg: 'Held. May will remind you tomorrow.',
     },
+    result: 'Two hours of spreadsheets. Now: 8 seconds and one tap.',
   },
   {
     key: 'after_hours',
-    chatTitleEn: 'After-hours',
-    chatTitleZh: '下班值守',
+    status: 'online · 11:14pm',
     messages: [
-      { from: 'customer', name: 'Priya S.', text: 'Hi are you open tomorrow?', time: '11:47 PM' },
-      { from: 'may_out',  text: "Hi Priya! We're closed now but open tomorrow 10am–7pm 😊 Want to book?", time: '11:47 PM' },
-      { from: 'customer', name: 'Priya S.', text: 'Yes! 3pm please', time: '11:48 PM' },
-      { from: 'may_out',  text: '✅ Booked! Priya · Tomorrow 3pm. See you! 🎉', time: '11:48 PM' },
-      { from: 'may_boss', text: '💤 While you slept: 1 booking captured — Priya, tomorrow 3pm. Revenue secured. Nothing needed from you.', time: '11:48 PM' },
+      { r:1, t:'[11:14pm] hi is it too late? want to book tmrw' },
+      { r:0, t:'Never too late! Tomorrow got 10am, 12pm and 3pm. What service?' },
+      { r:1, t:'hair treatment and trim' },
+      { r:0, t:"About 1.5 hours. 10am works best — what's your name?" },
+      { r:1, t:'Lina' },
+      { r:0, t:'Got it Lina! Holding 10am — the boss will see this in the morning…' },
     ],
-    panel: {
-      titleEn: '🌙 After-hours Duty', titleZh: '🌙 下班值守',
-      items: [
-        { label: 'Time',          labelZh: '时间',       value: '11:47 PM (after close)', valueZh: '11:47 PM（关门后）' },
-        { label: 'Response time', labelZh: '回复速度',   value: '< 1 second', valueZh: '不到 1 秒' },
-        { label: 'Booking',       labelZh: '预约',       value: "Priya S. · Tomorrow 3pm", valueZh: "Priya · 明天 3pm" },
-        { label: 'Your role',     labelZh: '你需要做什么', value: 'Nothing. Sleep well. 😴', valueZh: '什么都不用做。😴', highlight: true },
-      ],
-      noActionEn: 'May handled it while you slept. 0 action needed.',
-      noActionZh: 'May 帮你搞定了。你不需要做任何事。',
+    boss: {
+      flag: 'Booked while you slept',
+      title: 'Approval (next morning)',
+      detail: 'Lina · Tomorrow 10am\nTreatment + trim (~1.5 hrs)\nInquiry came in at 11:14pm',
+      ok: 'Confirm', no: 'Decline',
+      okMsg: 'Confirmed ✓  Lina notified for 10am.',
+      noMsg: 'Lina notified slot unavailable. May suggests alternatives.',
     },
+    result: 'You were asleep. You woke up to a confirmed booking. Zero missed inquiries.',
   },
   {
     key: 'daily_briefing',
-    chatTitleEn: 'Daily Briefing',
-    chatTitleZh: '每日 CEO 简报',
+    status: 'your morning briefing…',
     messages: [
-      { from: 'may_boss', text: "☀️ Good morning, Captain!\n\n📅 Today: 8 bookings confirmed\n💰 Yesterday: RM 680 collected\n⭐ Top performer: Lisa (4 services)\n\n⚠️ 2 decisions need you today:\n1. Annie win-back (45 days)\n2. May commission payout", time: '8:00 AM' },
+      { r:0, t:'Morning boss ☀️ Yesterday: RM 3,240 (▲12% vs last Wed). 18 appointments, 2 no-shows. Top service: Balayage. Two things 👇' },
+      { r:0, t:'1) Wei Ling is your top stylist — RM 9,800, 64 clients.\n2) Aminah is down 18% this month — worth a quick chat.' },
+      { r:1, t:"Any customers I'm about to lose?" },
+      { r:0, t:"Yes — 5 VIP clients haven't visited in 40+ days. Together they're worth ~RM 2,400 a round. Shall I win them back?" },
     ],
-    panel: {
-      titleEn: '☀️ Morning Briefing', titleZh: '☀️ 每日早报',
-      items: [
-        { label: "Today's bookings",  labelZh: '今日预约',   value: '8 confirmed ✅', valueZh: '8个已确认 ✅' },
-        { label: 'Yesterday revenue', labelZh: '昨日收入',   value: 'RM 680', highlight: true },
-        { label: 'Top performer',     labelZh: '最佳员工',   value: 'Lisa · 4 services', valueZh: 'Lisa · 4个服务' },
-        { label: 'Decisions needed',  labelZh: '待你决策',   value: '2 items below', valueZh: '2项如下' },
-      ],
-      actionEn: '✓ Handle Decision 1 (Annie)', actionZh: '✓ 处理决策1（Annie）',
-      holdEn:   'Skip to Decision 2', holdZh: '处理决策2',
-      noteEn:   '2 taps. Done. Back to your coffee ☕',
-      noteZh:   '2下搞定。喝你的咖啡 ☕',
+    boss: {
+      flag: 'Daily Briefing · she watches everything',
+      title: 'Win-back — your approval',
+      detail: "5 VIP clients · 40+ days no visit\nSend a personalised 'we miss you' offer to all 5?",
+      ok: 'Yes, send to all 5', no: 'Let me pick',
+      okMsg: "Sent ✓  5 offers out. I'll report who books back.",
+      noMsg: 'Opening the list for you to choose.',
     },
+    result: "She read every number — and handed you the one decision that mattered. That's a PA, not a chatbot.",
   },
 ]
 
@@ -509,32 +497,54 @@ function DemoSection() {
   const isMobile = useIsMobile()
   const [activeTab, setActiveTab] = useState(0)
   const [visibleCount, setVisibleCount] = useState(0)
+  const [typingIdx, setTypingIdx]   = useState(-1)
   const [playing, setPlaying]       = useState(false)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [panelVisible, setPanelVisible] = useState(false)
+  const [actionState, setActionState]   = useState<null|'ok'|'no'>(null)
+  const timerRefs = useRef<ReturnType<typeof setTimeout>[]>([])
+  const chatRef   = useRef<HTMLDivElement>(null)
 
-  const scenario = DEMO_SCENARIOS[activeTab]
-  const msgs = scenario.messages
+  const scenario   = DEMO_SCENARIOS[activeTab]
+  const isGoldTab  = scenario.key === 'daily_briefing'
+
+  function clearAll() { timerRefs.current.forEach(clearTimeout); timerRefs.current = [] }
+
+  function scrollBottom() {
+    setTimeout(() => { if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight }, 30)
+  }
 
   function playDemo() {
-    setVisibleCount(0); setPlaying(true); let i = 0
-    function next() {
-      i++; setVisibleCount(i)
-      if (i < msgs.length) timerRef.current = setTimeout(next, 1300)
-      else setPlaying(false)
-    }
-    timerRef.current = setTimeout(next, 400)
+    clearAll()
+    setVisibleCount(0); setTypingIdx(-1); setPlaying(true)
+    setPanelVisible(false); setActionState(null)
+    const ms = DEMO_SCENARIOS[activeTab].messages
+    const ts: ReturnType<typeof setTimeout>[] = []
+    let t = 400
+    ms.forEach((msg, i) => {
+      if (msg.r === 1) {
+        ts.push(setTimeout(() => { setVisibleCount(i + 1); scrollBottom() }, t))
+        t += 850
+      } else {
+        ts.push(setTimeout(() => { setTypingIdx(i); scrollBottom() }, t))
+        t += msg.t.length > 80 ? 2100 : 1500
+        ts.push(setTimeout(() => { setVisibleCount(i + 1); setTypingIdx(-1); scrollBottom() }, t))
+        t += 620
+      }
+    })
+    ts.push(setTimeout(() => { setPlaying(false); setPanelVisible(true) }, t + 300))
+    timerRefs.current = ts
   }
 
   useEffect(() => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setVisibleCount(0); setPlaying(false)
-    timerRef.current = setTimeout(() => playDemo(), 600)
-    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+    clearAll()
+    setVisibleCount(0); setTypingIdx(-1); setPlaying(false); setPanelVisible(false); setActionState(null)
+    timerRefs.current = [setTimeout(playDemo, 600)]
+    return clearAll
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab])
 
-  const panel = scenario.panel
-  const isSpecialTab = scenario.key === 'daily_briefing'
+  const boss        = scenario.boss
+  const detailLines = boss.detail.split('\n')
 
   return (
     <section id="demo" style={{ padding: '80px 40px', background: '#080808', borderTop: '1px solid #1a1a1a' }}>
@@ -543,7 +553,7 @@ function DemoSection() {
         <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 700, marginBottom: 8, letterSpacing: '-0.5px' }}>{c.demo_title}</h2>
         <p style={{ fontSize: 14, color: '#666', marginBottom: 32 }}>{c.demo_sub}</p>
 
-        {/* 6 scenario tabs — horizontal scroll on mobile */}
+        {/* 6 scenario tabs */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 24, overflowX: 'auto', paddingBottom: 4, msOverflowStyle: 'none' }}>
           {DEMO_SCENARIOS.map((s, i) => {
             const isActive = activeTab === i
@@ -566,137 +576,113 @@ function DemoSection() {
         {/* Split-screen: chat left, boss panel right */}
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20, alignItems: 'start' }}>
 
-          {/* ── LEFT: WhatsApp Chat ── */}
-          <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden' }}>
-            {/* Chat header */}
-            <div style={{ background: '#111', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #1a1a1a' }}>
-              <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#1a2e00', border: `2px solid ${G}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🤖</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>
-                  May · {isZh ? scenario.chatTitleZh : scenario.chatTitleEn}
+          {/* ── LEFT: Chat + Result ── */}
+          <div>
+            <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden' }}>
+              {/* Chat header */}
+              <div style={{ background: '#111', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #1a1a1a' }}>
+                <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'radial-gradient(circle at 34% 30%, #b9e188, #7DC400 72%)', border: `2px solid ${G}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11260a', fontSize: 16, flexShrink: 0 }}>M</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>May · AI CEO PA</div>
+                  <div style={{ fontSize: 11, color: G, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <span style={{ display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: G, boxShadow: `0 0 5px ${G}`, flexShrink: 0 }} />
+                    {scenario.status}
+                  </div>
                 </div>
-                <div style={{ fontSize: 11, color: G }}>● Online · Always Ready</div>
+              </div>
+
+              {/* Messages */}
+              <div ref={chatRef} style={{ padding: '16px 14px', minHeight: 260, maxHeight: isMobile ? 280 : 340, overflowY: 'auto' }}>
+                {scenario.messages.map((msg, i) => {
+                  const isVisible = i < visibleCount
+                  const isTyping  = typingIdx === i
+                  if (!isVisible && !isTyping) return null
+                  if (isTyping) {
+                    return (
+                      <div key={`typing-${i}`} style={{ display: 'flex', marginBottom: 10 }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '10px 14px', background: 'rgba(125,196,0,0.1)', border: '1px solid rgba(125,196,0,0.22)', borderRadius: '4px 14px 14px 14px' }}>
+                          {[0, 1, 2].map(j => <span key={j} style={{ width: 5, height: 5, borderRadius: '50%', background: G, display: 'inline-block', animation: `bop ${0.6 + j * 0.18}s ease-in-out infinite` }} />)}
+                        </div>
+                      </div>
+                    )
+                  }
+                  const isRight = msg.r === 1
+                  return (
+                    <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: isRight ? 'flex-end' : 'flex-start', marginBottom: 10 }}>
+                      <div style={{
+                        maxWidth: '84%', padding: '9px 13px',
+                        borderRadius: isRight ? '14px 4px 14px 14px' : '4px 14px 14px 14px',
+                        background: isRight ? '#2a2a2a' : 'rgba(125,196,0,0.1)',
+                        border: isRight ? '1px solid #333' : '1px solid rgba(125,196,0,0.22)',
+                        fontSize: 13, color: isRight ? '#ddd' : '#e4f1d6', lineHeight: 1.6, whiteSpace: 'pre-line',
+                      }}>{msg.t}</div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Replay */}
+              <div style={{ padding: '10px 14px', borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'flex-end' }}>
+                <button onClick={playDemo} disabled={playing} style={{ padding: '6px 16px', borderRadius: 12, background: playing ? '#222' : G, color: playing ? '#555' : '#0A0A0A', fontSize: 12, fontWeight: 700, border: 'none', cursor: playing ? 'default' : 'pointer' }}>
+                  {playing ? c.playing_txt : c.replay_btn}
+                </button>
               </div>
             </div>
 
-            {/* Messages */}
-            <div style={{ padding: '16px 14px', minHeight: 260, maxHeight: isMobile ? 280 : 340, overflowY: 'auto' }}>
-              {msgs.map((msg, i) => {
-                if (i >= visibleCount) return null
-                const isCustomer = msg.from === 'customer'
-                const isMayOut   = msg.from === 'may_out'
-                // may_boss = notification TO the boss (orange/amber accent)
-                return (
-                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: isCustomer ? 'flex-end' : 'flex-start', marginBottom: 12 }}>
-                    {isCustomer && (
-                      <div style={{ fontSize: 10, color: '#555', marginBottom: 3, marginRight: 4 }}>
-                        {msg.name} · {msg.time}
-                      </div>
-                    )}
-                    {isMayOut && (
-                      <div style={{ fontSize: 10, color: G, marginBottom: 3, marginLeft: 4, fontWeight: 600 }}>
-                        {c.may_label} · {msg.time}
-                      </div>
-                    )}
-                    {msg.from === 'may_boss' && (
-                      <div style={{ fontSize: 10, color: '#FFA500', marginBottom: 3, marginLeft: 4, fontWeight: 600 }}>
-                        {c.boss_label} · {msg.time}
-                      </div>
-                    )}
-                    <div style={{
-                      maxWidth: '84%', padding: '9px 13px',
-                      borderRadius: isCustomer ? '14px 4px 14px 14px' : '4px 14px 14px 14px',
-                      background:
-                        isCustomer ? '#2a2a2a' :
-                        isMayOut   ? '#1a2e00' :
-                                     '#2e1800',   /* may_boss = dark amber bg */
-                      border:
-                        isCustomer ? '1px solid #333' :
-                        isMayOut   ? `1px solid rgba(125,196,0,0.25)` :
-                                     `1px solid rgba(255,165,0,0.2)`,
-                      fontSize: 13, color: '#fff', lineHeight: 1.6, whiteSpace: 'pre-line',
-                    }}>
-                      {msg.text}
-                    </div>
-                  </div>
-                )
-              })}
-              {playing && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '8px 12px' }}>
-                  {[0,1,2].map(i => (
-                    <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: G, display: 'inline-block', animation: `pulse-green ${0.6 + i * 0.2}s ease-in-out infinite` }} />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Replay button */}
-            <div style={{ padding: '10px 14px', borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={playDemo} disabled={playing} style={{ padding: '6px 16px', borderRadius: 12, background: playing ? '#222' : G, color: playing ? '#555' : '#0A0A0A', fontSize: 12, fontWeight: 700, border: 'none', cursor: playing ? 'default' : 'pointer' }}>
-                {playing ? c.playing_txt : c.replay_btn}
-              </button>
-            </div>
+            {/* Result text — appears after scenario ends */}
+            {panelVisible && (
+              <div style={{ marginTop: 10, borderLeft: `2px solid ${G}`, padding: '11px 15px', background: 'rgba(125,196,0,0.06)', color: '#cfe2bb', fontSize: 12, lineHeight: 1.55, borderRadius: '0 8px 8px 0' }}>
+                {scenario.result}
+              </div>
+            )}
           </div>
 
           {/* ── RIGHT: Boss Decision Panel ── */}
-          <div style={{ background: '#0d0d0d', border: isSpecialTab ? '1px solid rgba(255,215,0,0.15)' : '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden' }}>
-            {/* Panel header */}
-            <div style={{ background: isSpecialTab ? '#111500' : '#111', padding: '12px 16px', borderBottom: `1px solid ${isSpecialTab ? 'rgba(255,215,0,0.12)' : '#1a1a1a'}` }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: isSpecialTab ? '#FFD700' : '#fff' }}>
-                {isZh ? panel.titleZh : panel.titleEn}
-              </div>
-              <div style={{ fontSize: 11, color: '#444', marginTop: 2 }}>{c.boss_panel_header}</div>
-            </div>
-
-            {/* Panel items */}
-            <div style={{ padding: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 18 }}>
-                {panel.items.map((item, i) => (
-                  <div key={i} style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8,
-                    padding: '8px 10px', borderRadius: 8,
-                    background: item.highlight ? 'rgba(125,196,0,0.05)' : '#111',
-                    border: `1px solid ${item.highlight ? 'rgba(125,196,0,0.18)' : '#1a1a1a'}`,
-                  }}>
-                    <div style={{ fontSize: 11, color: '#555', flexShrink: 0 }}>
-                      {isZh ? item.labelZh : item.label}
-                    </div>
-                    <div style={{ fontSize: 12, color: item.highlight ? G : '#ccc', fontWeight: item.highlight ? 700 : 400, textAlign: 'right', lineHeight: 1.4 }}>
-                      {isZh ? (item.valueZh ?? item.value) : item.value}
-                    </div>
+          <div style={{
+            background: isGoldTab ? 'linear-gradient(165deg, #131500, #0a0a00)' : 'linear-gradient(165deg, #101829, #0a1020)',
+            border: isGoldTab ? '1px solid rgba(255,215,0,0.15)' : '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 16, overflow: 'hidden', position: 'relative', minHeight: 220,
+          }}>
+            {/* Top shimmer line */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${isGoldTab ? 'rgba(255,215,0,0.9)' : G}, transparent)`, opacity: 0.55 }} />
+            <div style={{ padding: 17 }}>
+              {panelVisible ? (
+                <div>
+                  <div style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: isGoldTab ? '#FFD700' : G, marginBottom: 9 }}>{boss.flag}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 11 }}>
+                    <div style={{ width: 27, height: 27, borderRadius: '50%', background: 'radial-gradient(circle at 34% 30%, #b9e188, #7DC400 72%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#11260a', fontWeight: 700, flexShrink: 0 }}>M</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#eef1ee', lineHeight: 1.4 }}>{boss.title}</div>
                   </div>
-                ))}
-              </div>
-
-              {/* No-action state (after-hours) */}
-              {panel.noActionEn ? (
-                <div style={{ background: 'rgba(125,196,0,0.05)', border: '1px solid rgba(125,196,0,0.18)', borderRadius: 10, padding: '16px', textAlign: 'center' }}>
-                  <div style={{ fontSize: 24, marginBottom: 8 }}>✅</div>
-                  <div style={{ fontSize: 13, color: G, fontWeight: 600, lineHeight: 1.5 }}>
-                    {isZh ? panel.noActionZh : panel.noActionEn}
-                  </div>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {panel.actionEn && (
-                    <button style={{ padding: '11px 16px', borderRadius: 10, background: G, color: '#0A0A0A', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', textAlign: 'left' }}>
-                      {isZh ? panel.actionZh : panel.actionEn}
-                    </button>
-                  )}
-                  {panel.holdEn && (
-                    <button style={{ padding: '11px 16px', borderRadius: 10, background: 'transparent', color: '#555', fontWeight: 600, fontSize: 13, border: '1px solid #2a2a2a', cursor: 'pointer', textAlign: 'left' }}>
-                      {isZh ? panel.holdZh : panel.holdEn}
-                    </button>
-                  )}
-                  {panel.noteEn && (
-                    <div style={{ fontSize: 11, color: '#444', textAlign: 'center', marginTop: 4, fontStyle: 'italic' }}>
-                      {isZh ? panel.noteZh : panel.noteEn}
+                  <p style={{ fontSize: 12, color: '#aab3c0', lineHeight: 1.7, marginBottom: 15 }}>
+                    <strong style={{ color: '#e8f0df', fontWeight: 500 }}>{detailLines[0]}</strong>
+                    {detailLines.slice(1).map((line, li) => <span key={li}><br />{line}</span>)}
+                  </p>
+                  {actionState ? (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                      <span style={{ fontSize: 16, lineHeight: 1.2 }}>{actionState === 'ok' ? '✅' : '❌'}</span>
+                      <span style={{ fontSize: 12, lineHeight: 1.55, color: actionState === 'ok' ? '#b9e188' : '#e0917a' }}>
+                        {actionState === 'ok' ? boss.okMsg : boss.noMsg}
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => setActionState('ok')} style={{ flex: 1, padding: '9px 14px', borderRadius: 9, fontSize: 12, fontWeight: 500, cursor: 'pointer', background: G, color: '#11260a', border: `1px solid ${G}`, fontFamily: 'inherit', transition: '.15s' }}>
+                        {boss.ok}
+                      </button>
+                      <button onClick={() => setActionState('no')} style={{ flex: 1, padding: '9px 14px', borderRadius: 9, fontSize: 12, fontWeight: 500, cursor: 'pointer', background: 'transparent', color: '#aab3c0', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'inherit', transition: '.15s' }}>
+                        {boss.no}
+                      </button>
                     </div>
                   )}
                 </div>
+              ) : (
+                <p style={{ fontSize: 12, color: '#5c6678', textAlign: 'center', margin: '48px 0' }}>
+                  {isZh ? 'May 正在处理中…' : 'May is working on it…'}
+                </p>
               )}
             </div>
           </div>
+
         </div>
 
         {/* CTA under demo */}
