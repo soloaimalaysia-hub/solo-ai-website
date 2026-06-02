@@ -359,20 +359,23 @@ function LangToggle() {
 function Navbar() {
   const { lang } = useLang()
   const c = CONTENT[lang]
+  const isMobile = useIsMobile()
   return (
     <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: '1px solid #1a1a1a', background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(12px)' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <img src={LOGO} alt="Solo AI" style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
-        <div style={{ display: 'flex', gap: 24, fontSize: 13 }}>
-          {c.nav.map(([label, href]) => (
-            <a key={href} href={href} style={{ color: '#888', textDecoration: 'none' }}
-              onMouseEnter={e => (e.currentTarget.style.color = G)}
-              onMouseLeave={e => (e.currentTarget.style.color = '#888')}>{label}</a>
-          ))}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: isMobile ? '0 16px' : '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <img src={LOGO} alt="Solo AI" style={{ height: 32, width: 'auto', objectFit: 'contain', flexShrink: 0 }} />
+        {!isMobile && (
+          <div style={{ display: 'flex', gap: 24, fontSize: 13 }}>
+            {c.nav.map(([label, href]) => (
+              <a key={href} href={href} style={{ color: '#888', textDecoration: 'none' }}
+                onMouseEnter={e => (e.currentTarget.style.color = G)}
+                onMouseLeave={e => (e.currentTarget.style.color = '#888')}>{label}</a>
+            ))}
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
           <LangToggle />
-          <a href="#contact" style={{ padding: '8px 20px', borderRadius: 20, background: G, color: '#0A0A0A', fontWeight: 600, fontSize: 13, textDecoration: 'none' }}>{c.nav_cta}</a>
+          <a href="#contact" style={{ padding: isMobile ? '7px 14px' : '8px 20px', borderRadius: 20, background: G, color: '#0A0A0A', fontWeight: 600, fontSize: 13, textDecoration: 'none', whiteSpace: 'nowrap' }}>{c.nav_cta}</a>
         </div>
       </div>
     </nav>
@@ -384,8 +387,8 @@ function Hero() {
   const { lang } = useLang()
   const c = CONTENT[lang]
   return (
-    <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 40px 80px', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 700, borderRadius: '50%', background: 'radial-gradient(circle, rgba(125,196,0,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+    <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 'clamp(100px,15vw,120px) clamp(16px,5vw,40px) 80px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%,-50%)', width: 'min(700px,180vw)', height: 'min(700px,180vw)', borderRadius: '50%', background: 'radial-gradient(circle, rgba(125,196,0,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
       <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2a2a2a', borderRadius: 20, padding: '6px 16px', fontSize: 12, color: G, marginBottom: 24, letterSpacing: 1 }}>
         {c.badge}
       </div>
@@ -428,16 +431,17 @@ function Solutions() {
   const { lang } = useLang()
   const c = CONTENT[lang]
   const isZh = lang === 'zh'
+  const isMobile = useIsMobile()
   const allFeatures = [c.may_features, c.fnb_features]
 
   return (
-    <section id="solutions" style={{ padding: '60px 40px', background: '#0A0A0A' }}>
+    <section id="solutions" style={{ padding: isMobile ? '40px 16px' : '60px 40px', background: '#0A0A0A' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         {/* Stats bar */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 1, background: '#1a1a1a', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', marginBottom: 48 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 1, background: '#1a1a1a', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', marginBottom: 40 }}>
           {[{ num:'6', i:0 },{ num:'1,744', i:1 },{ num:'24/7', i:2 },{ num:'4+', i:3 }].map(s => (
-            <div key={s.i} style={{ background: '#111', padding: 28, textAlign: 'center' }}>
-              <div style={{ fontSize: 32, fontWeight: 800, color: G, marginBottom: 6 }}>{s.num}</div>
+            <div key={s.i} style={{ background: '#111', padding: isMobile ? '20px 12px' : 28, textAlign: 'center' }}>
+              <div style={{ fontSize: isMobile ? 26 : 32, fontWeight: 800, color: G, marginBottom: 6 }}>{s.num}</div>
               <div style={{ fontSize: 11, color: '#555' }}>{c.stat_labels[s.i]}</div>
             </div>
           ))}
@@ -448,7 +452,7 @@ function Solutions() {
         <p style={{ fontSize: 14, color: '#666', marginBottom: 36, lineHeight: 1.7 }}>{c.sol_sub}</p>
 
         {/* 2 primary industry cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20, marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(300px,1fr))', gap: 20, marginBottom: 32 }}>
           {SOL_PRIMARY.map((s, i) => {
             const features = allFeatures[i]
             return (
@@ -547,7 +551,7 @@ function DemoSection() {
   const detailLines = boss.detail.split('\n')
 
   return (
-    <section id="demo" style={{ padding: '80px 40px', background: '#080808', borderTop: '1px solid #1a1a1a' }}>
+    <section id="demo" style={{ padding: isMobile ? '50px 16px' : '80px 40px', background: '#080808', borderTop: '1px solid #1a1a1a' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ fontSize: 11, color: G, letterSpacing: 2, marginBottom: 8 }}>{c.demo_eyebrow}</div>
         <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 700, marginBottom: 8, letterSpacing: '-0.5px' }}>{c.demo_title}</h2>
@@ -700,14 +704,15 @@ function DemoSection() {
 function WhySoloAI() {
   const { lang } = useLang()
   const c = CONTENT[lang]
+  const isMobile = useIsMobile()
   return (
-    <section style={{ padding: '80px 40px', background: '#0A0A0A', borderTop: '1px solid #1a1a1a' }}>
+    <section style={{ padding: isMobile ? '50px 16px' : '80px 40px', background: '#0A0A0A', borderTop: '1px solid #1a1a1a' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ fontSize: 11, color: G, letterSpacing: 2, marginBottom: 8 }}>{c.why_eyebrow}</div>
         <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 700, marginBottom: 8, letterSpacing: '-0.5px' }}>{c.why_title}</h2>
         <p style={{ fontSize: 14, color: '#666', marginBottom: 40 }}>{c.why_sub}</p>
         {/* 4 cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16, marginBottom: 48 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(220px,100%),1fr))', gap: 16, marginBottom: 48 }}>
           {c.why_cards.map(card => (
             <div key={card.title} className="solution-card" style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
               <div className="card-top-line" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: G }} />
@@ -717,20 +722,22 @@ function WhySoloAI() {
             </div>
           ))}
         </div>
-        {/* Comparison table */}
-        <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: '#111', borderBottom: '1px solid #1a1a1a' }}>
-            {c.cmp_header.map((h, i) => (
-              <div key={i} style={{ padding: '14px 20px', fontSize: 12, fontWeight: 700, color: i === 2 ? G : '#555', textTransform: 'uppercase', letterSpacing: 1, borderLeft: i > 0 ? '1px solid #1a1a1a' : undefined }}>{h}</div>
+        {/* Comparison table — scrollable on mobile */}
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: 16 }}>
+          <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', minWidth: 480 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: '#111', borderBottom: '1px solid #1a1a1a' }}>
+              {c.cmp_header.map((h, i) => (
+                <div key={i} style={{ padding: '14px 20px', fontSize: 12, fontWeight: 700, color: i === 2 ? G : '#555', textTransform: 'uppercase', letterSpacing: 1, borderLeft: i > 0 ? '1px solid #1a1a1a' : undefined }}>{h}</div>
+              ))}
+            </div>
+            {c.cmp_rows.map((row, i) => (
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < c.cmp_rows.length - 1 ? '1px solid #1a1a1a' : undefined }}>
+                <div style={{ padding: '13px 20px', fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{row.f}</div>
+                <div style={{ padding: '13px 20px', fontSize: 13, color: '#555', borderLeft: '1px solid #1a1a1a' }}>{row.t}</div>
+                <div style={{ padding: '13px 20px', fontSize: 13, color: G, fontWeight: 600, borderLeft: '1px solid #1a1a1a' }}>{row.s}</div>
+              </div>
             ))}
           </div>
-          {c.cmp_rows.map((row, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < c.cmp_rows.length - 1 ? '1px solid #1a1a1a' : undefined }}>
-              <div style={{ padding: '13px 20px', fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{row.f}</div>
-              <div style={{ padding: '13px 20px', fontSize: 13, color: '#555', borderLeft: '1px solid #1a1a1a' }}>{row.t}</div>
-              <div style={{ padding: '13px 20px', fontSize: 13, color: G, fontWeight: 600, borderLeft: '1px solid #1a1a1a' }}>{row.s}</div>
-            </div>
-          ))}
         </div>
       </div>
     </section>
@@ -747,7 +754,7 @@ function Pricing() {
     { tag: lang === 'en' ? 'ENTERPRISE' : '企业版', price: lang === 'en' ? 'Custom' : '定制', period: '', setup: lang === 'en' ? 'Multi-location · Multi-industry' : '多门店 · 多行业', featured: false, features: lang === 'en' ? ['Everything in Professional','Multi-branch','Custom integrations','Dedicated account manager','SEA expansion ready'] : ['包含专业版所有功能','多分店管理','定制集成','专属客户经理','东南亚扩张就绪'], btn: lang === 'en' ? 'Contact Us' : '联系我们', filled: false },
   ]
   return (
-    <section id="pricing" style={{ padding: '60px 40px', background: '#080808', borderTop: '1px solid #1a1a1a' }}>
+    <section id="pricing" style={{ padding: 'clamp(40px,8vw,60px) clamp(16px,5vw,40px)', background: '#080808', borderTop: '1px solid #1a1a1a' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ fontSize: 11, color: G, letterSpacing: 2, marginBottom: 8 }}>{c.pricing_eyebrow}</div>
         <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 700, marginBottom: 8, letterSpacing: '-0.5px' }}>{c.pricing_title}</h2>
@@ -780,6 +787,7 @@ function Pricing() {
 function Contact() {
   const { lang } = useLang()
   const c = CONTENT[lang]
+  const isMobile = useIsMobile()
   const [form, setForm] = useState({ name: '', phone: '', service: '', challenge: '' })
   const [done, setDone] = useState(false)
   const [sending, setSending] = useState(false)
@@ -800,12 +808,12 @@ function Contact() {
   ]
 
   return (
-    <section id="contact" style={{ padding: '80px 40px', background: '#0A0A0A', borderTop: '1px solid #1a1a1a' }}>
+    <section id="contact" style={{ padding: isMobile ? '50px 16px' : '80px 40px', background: '#0A0A0A', borderTop: '1px solid #1a1a1a' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ fontSize: 11, color: G, letterSpacing: 2, marginBottom: 8 }}>{c.contact_eyebrow}</div>
         <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 700, marginBottom: 8, letterSpacing: '-0.5px' }}>{c.contact_title}</h2>
         <p style={{ fontSize: 14, color: '#666', marginBottom: 40 }}>{c.contact_sub}</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 32 : 48, alignItems: 'start' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {contactItems.map(item => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
@@ -878,7 +886,7 @@ function Footer() {
   const { lang } = useLang()
   const c = CONTENT[lang]
   return (
-    <footer style={{ padding: '24px 40px', borderTop: '1px solid #1a1a1a', background: '#050505', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+    <footer style={{ padding: 'clamp(20px,4vw,24px) clamp(16px,5vw,40px)', borderTop: '1px solid #1a1a1a', background: '#050505', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
       <div style={{ fontSize: 12, color: '#444' }}>
         <img src={LOGO} alt="Solo AI" style={{ height: 28, width: 'auto', objectFit: 'contain', marginBottom: 6 }} />
         <div>{c.footer_tag}</div>
